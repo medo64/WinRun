@@ -1,0 +1,10 @@
+Package:        winrun
+Version:        MAJOR.MINOR.PATCH
+Architecture:   ARCHITECTURE
+Maintainer:     Josip Medved <jmedved@jmedved.com>
+Homepage:       https://www.medo64.com/winrun/
+Description:    Quick way to run programs in a similar way Windows Run dialog does
+ Tries to allow for both Windows and Linux formatting.
+Section:        utils
+Priority:       optional
+Depends:        debconf, gnupg2, libc6

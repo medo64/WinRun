@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=WinRun
+GenericName=Run
+Comment=Quick way to run programs in a similar way Windows Run dialog does
+TryExec=/opt/winrun/winrun
+Exec=/opt/winrun/winrun
+Icon=winrun
+Type=Application
+Categories=GTK;GNOME;Utility;
