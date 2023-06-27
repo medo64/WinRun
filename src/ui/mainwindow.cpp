@@ -67,10 +67,11 @@ MainWindow::MainWindow() : QMainWindow(nullptr), ui(new Ui::MainWindow) {
     connect(ui->comboRun, &QComboBox::currentTextChanged, [this](const QString& text) {
         ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(!text.isEmpty());
     });
+    ui->comboRun->installEventFilter(this);  // to intercept enter
 
     // load history
     QStringList list = State::history();
-    for (QString item : list) {
+    for (const QString& item : qAsConst(list)) {
         ui->comboRun->addItem(item);
     }
     if (Settings::startEmpty()) {
@@ -89,6 +90,21 @@ void MainWindow::closeEvent(QCloseEvent* event) {
     Q_UNUSED(event);
     State::setLastWidth(width());
     QCoreApplication::exit(0);
+}
+
+bool MainWindow::eventFilter(QObject* obj, QEvent* event) {
+    bool isKeyEvent = (event->type() == QEvent::KeyPress);
+    if (isKeyEvent) {
+        if (obj == ui->comboRun) {
+            qDebug() << "TEST";
+            QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
+            if (keyEvent->key() == Qt::Key_Return || keyEvent->key() == Qt::Key_Enter) {
+                keyPressEvent(keyEvent);  // forward enter to main form
+                return true; // Event handled, do not propagate further
+            }
+        }
+    }
+    return false;
 }
 
 void MainWindow::keyPressEvent(QKeyEvent* event) {
