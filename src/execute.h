@@ -10,5 +10,7 @@ class Execute {
         static bool tryExecuteDirectory(QString text);
         static bool tryExecuteFile(QString text);
         static bool tryExecuteCommand(QString text);
+        static bool tryExecuteProtocol(QString path);
+        static bool tryExecuteElse(QString text);
 
 };
