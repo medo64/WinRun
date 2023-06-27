@@ -7,4 +7,5 @@
 **/*.pro.user.*
 **/*.rs.bk
 
+*.out
 *.rar

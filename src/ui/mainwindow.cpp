@@ -1,10 +1,10 @@
 #include <algorithm>
-#include <QDebug>
 #include <QLineEdit>
 #include <QRect>
 #include <QScreen>
 #include "medo/about.h"
 #include "medo/singleinstance.h"
+#include "execute.h"
 #include "settings.h"
 #include "state.h"
 #include "visuals.h"
@@ -122,13 +122,6 @@ void MainWindow::onShow() {
 
 void MainWindow::onDialogButtonClicked(QAbstractButton* button) {
     if (button == ui->buttonBox->button(QDialogButtonBox::Ok)) {
-        QStringList history = State::history();
-        history.prepend(ui->comboRun->currentText());
-        history.removeDuplicates();
-        while (history.size() > Settings::historyCount()) {
-            history.removeLast();
-        }
-        State::setHistory(history);
         execute(ui->comboRun->currentText());
         this->close();
     } else {
@@ -148,7 +141,13 @@ void MainWindow::applySettings(bool applyHotkey, bool applyForceDarkMode) {
 }
 
 void MainWindow::execute(QString text) {
-    qDebug().noquote() << "Execute:" << text;
+    QStringList history = State::history();
+    history.prepend(ui->comboRun->currentText());
+    history.removeDuplicates();
+    while (history.size() > Settings::historyCount()) {
+        history.removeLast();
+    }
+    State::setHistory(history);
 
-
+    Execute::execute(text);
 }

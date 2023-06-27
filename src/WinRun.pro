@@ -57,6 +57,7 @@ SOURCES += \
         medo/config.cpp \
         medo/singleinstance.cpp \
         app.cpp \
+        execute.cpp \
         settings.cpp \
         state.cpp \
         visuals.cpp
@@ -75,6 +76,7 @@ HEADERS += \
         medo/appsetupmutex.h \
         medo/config.h \
         medo/singleinstance.h \
+        execute.h \
         settings.h \
         state.h \
         visuals.h
