@@ -19,10 +19,10 @@ class Settings {
 
         static int historyCount();
         static void setHistoryCount(int newHistoryCount);
-        static int defaultHistoryCount() { return  42; }
+        static int defaultHistoryCount() { return 42; }
 
         static bool startEmpty();
         static void setStartEmpty(bool newStartEmpty);
-        static bool defaultStartEmpty() { return  false; }
+        static bool defaultStartEmpty() { return false; }
 
 };

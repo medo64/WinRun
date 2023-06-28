@@ -15,7 +15,7 @@
 
 MainWindow::MainWindow() : QMainWindow(nullptr), ui(new Ui::MainWindow) {
     ui->setupUi(this);
-    this->setWindowFlags(Qt::Dialog);
+    this->setWindowFlags(Qt::Dialog | Qt::WindowStaysOnTopHint);
     this->setWindowIcon(Visuals::iconApp());
 
     // window size
@@ -28,22 +28,55 @@ MainWindow::MainWindow() : QMainWindow(nullptr), ui(new Ui::MainWindow) {
     this->resize(lastWidth, defHeight);
 
     // window location
+    int windowQuadrant = State::lastQuadrant();
     QScreen *screen = QGuiApplication::primaryScreen();
     QRect  wholeRect = screen->geometry();
-    QRect  availRect = screen->availableGeometry();
-    int spaceL = availRect.left() - wholeRect.left();
-    int spaceR = wholeRect.right() - availRect.right();
-    int spaceT = availRect.top() - wholeRect.top();
-    int spaceB = wholeRect.bottom() - availRect.bottom();
-    int space = std::max({spaceL, spaceR, spaceT, spaceB});
-    if (space == spaceL) {  // taskbar on left (top, left)
-        this->move(availRect.left(), availRect.top());
-    } else if (space == spaceR) {  // taskbar on right (top, right)
-        this->move(availRect.right() - (int)width(), availRect.top());
-    } else if (space == spaceT) {  // taskbar on top (top, right)
-        this->move(availRect.right() - (int)width(), availRect.top());
-    } else {  // taskbar on bottom (bottom, right)
-        this->move(availRect.right() - (int)width(), availRect.bottom() - (int)height());
+    QRect  availRect = screen->availableGeometry();  // doesn't work in case of multiple monitors
+    if (windowQuadrant == 0) {
+        qDebug() << "Screen" << screen->name() << wholeRect << availRect;
+        int spaceL = availRect.left() - wholeRect.left();
+        int spaceR = wholeRect.right() - availRect.right();
+        int spaceT = availRect.top() - wholeRect.top();
+        int spaceB = wholeRect.bottom() - availRect.bottom();
+        int space = std::max({spaceL, spaceR, spaceT, spaceB});
+        if (space == spaceL) {  // taskbar on left (top, left)
+            windowQuadrant = 7;
+        } else if (space == spaceR) {  // taskbar on right (top, right)
+            windowQuadrant = 9;
+        } else if (space == spaceT) {  // taskbar on top (top, right)
+            windowQuadrant = 9;
+        } else {  // taskbar on bottom (bottom, right)
+            windowQuadrant = 3;
+        }
+    }
+    switch (windowQuadrant) {
+        case 1:  // bottom-left
+            this->move(availRect.left(), availRect.bottom() - (int)height());
+            break;
+        case 2:  // bottom-center
+            this->move(availRect.left() + (availRect.width() - (int)width()) / 2, availRect.bottom() - (int)height());
+            break;
+        case 3:  // bottom-right
+            this->move(availRect.right() - (int)width(), availRect.bottom() - (int)height());
+            break;
+        case 4:  // middle-left
+            this->move(availRect.left(), availRect.top() + (availRect.height() - (int)height()) / 2);
+            break;
+        case 5:  // middle-center
+            this->move(availRect.left() + (availRect.width() - (int)width()) / 2, availRect.top() + (availRect.height() - (int)height()) / 2);
+            break;
+        case 6:  // middle-right
+            this->move(availRect.right() - (int)width(), availRect.top() + (availRect.height() - (int)height()) / 2);
+            break;
+        case 7:  // top-left
+            this->move(availRect.left(), availRect.top());
+            break;
+        case 8:  // top-center
+            this->move(availRect.left() + (availRect.width() - (int)width()) / 2, availRect.top());
+            break;
+        case 9:  // top-right
+            this->move(availRect.right() - (int)width(), availRect.top());
+            break;
     }
 
     // remove button images
@@ -77,7 +110,7 @@ MainWindow::MainWindow() : QMainWindow(nullptr), ui(new Ui::MainWindow) {
     if (Settings::startEmpty()) {
         ui->comboRun->setCurrentIndex(-1);
     } else {
-            ui->comboRun->lineEdit()->selectAll();
+        ui->comboRun->lineEdit()->selectAll();
     }
 }
 
@@ -88,7 +121,41 @@ MainWindow::~MainWindow() {
 
 void MainWindow::closeEvent(QCloseEvent* event) {
     Q_UNUSED(event);
+
     State::setLastWidth(width());
+
+    // figure out the quadrant
+    QScreen *screen = QGuiApplication::primaryScreen();
+    QRect  rect = screen->geometry();
+    int lineLeft = rect.left() + rect.width() / 3;
+    int lineRight = rect.left() + rect.width() * 2 / 3;
+    int lineTop = rect.top() + rect.height() / 3;
+    int lineBottom = rect.top() + rect.height() * 2 / 3;
+    int x = this->x() + this->width() / 2;
+    int y = this->y() + this->height() / 2;
+    qDebug() << "Screen" << rect
+             << "L" << lineLeft << "R" << lineRight << "T" << lineTop << "B" << lineBottom
+             << "-" << "X" << x << "Y" << y;
+    if ((y <= lineTop) && (x <= lineLeft)) {
+        State::setLastQuadrant(7);
+    } else if ((y <= lineTop) && (x >= lineRight)) {
+        State::setLastQuadrant(9);
+    } else if (y <= lineTop) {
+        State::setLastQuadrant(8);
+    } else if ((y >= lineBottom) && (x <= lineLeft)) {
+        State::setLastQuadrant(1);
+    } else if ((y >= lineBottom) && (x >= lineRight)) {
+        State::setLastQuadrant(3);
+    } else if (y >= lineBottom) {
+        State::setLastQuadrant(2);
+    } else if (x <= lineLeft) {
+        State::setLastQuadrant(4);
+    } else if (x >= lineRight) {
+        State::setLastQuadrant(6);
+    } else {
+        State::setLastQuadrant(5);
+    }
+
     QCoreApplication::exit(0);
 }
 
@@ -96,7 +163,6 @@ bool MainWindow::eventFilter(QObject* obj, QEvent* event) {
     bool isKeyEvent = (event->type() == QEvent::KeyPress);
     if (isKeyEvent) {
         if (obj == ui->comboRun) {
-            qDebug() << "TEST";
             QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
             if (keyEvent->key() == Qt::Key_Return || keyEvent->key() == Qt::Key_Enter) {
                 keyPressEvent(keyEvent);  // forward enter to main form
