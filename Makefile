@@ -137,7 +137,7 @@ package: clean dist
 	@sed 's/MAJOR.MINOR.PATCH/$(DIST_VERSION)/g' docs/man/winrun.1 > build/man/winrun.1
 	@sed -i 's/CURR_DATE/$(MAN_DATE)/g' build/man/winrun.1
 	@mkdir -p $(PACKAGE_DIR)/usr/share/man/man1/
-	@gzip -cn --best build/man/winrun.1 > $(PACKAGE_DIR)/usr/share/man/man1/winrun.1.gz
+	@gzip -c9n build/man/winrun.1 > $(PACKAGE_DIR)/usr/share/man/man1/winrun.1.gz
 	@find $(PACKAGE_DIR)/ -type d -exec chmod 755 {} +
 	@find $(PACKAGE_DIR)/ -type f -exec chmod 644 {} +
 	@chmod 755 $(PACKAGE_DIR)/DEBIAN/config $(PACKAGE_DIR)/DEBIAN/p*inst $(PACKAGE_DIR)/DEBIAN/p*rm

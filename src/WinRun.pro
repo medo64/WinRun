@@ -1,6 +1,6 @@
 APP_PRODUCT = "WinRun"
 APP_COMPANY = "Josip Medved"
-APP_VERSION = "0.0.0"
+APP_VERSION = "1.0.0"
 APP_COPYRIGHT = "Copyright 2023 Josip Medved <jmedved@jmedved.com>"
 APP_DESCRIPTION = "WinRun: Quick run dialog"
 
