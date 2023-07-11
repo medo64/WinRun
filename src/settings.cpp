@@ -44,3 +44,12 @@ bool Settings::startEmpty() {
 void Settings::setStartEmpty(bool newStartEmpty) {
     Config::write("StartEmpty", newStartEmpty);
 }
+
+
+QString Settings::fileManager() {
+    return Config::read("FileManager", defaultFileManager());
+}
+
+void Settings::setFileManager(QString newFileManager) {
+    Config::write("FileManager", newFileManager);
+}

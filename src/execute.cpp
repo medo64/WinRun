@@ -7,6 +7,7 @@
 #include <QStringList>
 #include <QUrl>
 #include "execute.h"
+#include "settings.h"
 
 
 QString getPath(QString text){
@@ -98,25 +99,25 @@ QString combineIntoNautilusArg(QString protocol, QString host, QString user, QSt
 bool tryExecuteFtp(QString host, QString user, QString password, QString path) {
     qDebug().noquote() << "Execute [Protocol Ftp]:" << host << path;
     QString arg1 = combineIntoNautilusArg("ftp", host, user, password, path);
-    return QProcess::startDetached("/usr/bin/nautilus", QStringList { arg1 });  // TODO: support other file managers
+    return QProcess::startDetached(Settings::fileManager(), QStringList { arg1 });  // TODO: support other file managers
 }
 
 bool tryExecuteSftp(QString host, QString user, QString password, QString path) {
     qDebug().noquote() << "Execute [Protocol Sftp]:" << host << path;
     QString arg1 = combineIntoNautilusArg("sftp", host, user, password, path);
-    return QProcess::startDetached("/usr/bin/nautilus", QStringList { arg1 });  // TODO: support other file managers
+    return QProcess::startDetached(Settings::fileManager(), QStringList { arg1 });  // TODO: support other file managers
 }
 
 bool tryExecuteSmb(QString host, QString user, QString password, QString path) {
     qDebug().noquote() << "Execute [Protocol Smb]:" << host << path;
     QString arg1 = combineIntoNautilusArg("smb", host, user, password, path);
-    return QProcess::startDetached("/usr/bin/nautilus", QStringList { arg1 });  // TODO: support other file managers
+    return QProcess::startDetached(Settings::fileManager(), QStringList { arg1 });  // TODO: support other file managers
 }
 
 bool tryExecuteSsh(QString host, QString user, QString password, QString path) {
     qDebug().noquote() << "Execute [Protocol Ssh]:" << host << path;
     QString arg1 = combineIntoNautilusArg("ssh", host, user, password, path);
-    return QProcess::startDetached("/usr/bin/nautilus", QStringList { arg1 });  // TODO: support other file managers
+    return QProcess::startDetached(Settings::fileManager(), QStringList { arg1 });  // TODO: support other file managers
 }
 
 QStringList splitIntoTwo(QString text, QString separator) {

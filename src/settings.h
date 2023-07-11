@@ -1,6 +1,7 @@
 #pragma once
 #include <QKeySequence>
-#include "medo/config.h"
+#include <QFileInfo>
+#include <QString>
 
 class Settings {
 
@@ -24,5 +25,17 @@ class Settings {
         static bool startEmpty();
         static void setStartEmpty(bool newStartEmpty);
         static bool defaultStartEmpty() { return false; }
+
+        static QString fileManager();
+        static void setFileManager(QString newFileManager);
+        static QString defaultFileManager() {  // TODO: Proper detection of file manager
+            QFileInfo fileDolphin("/usr/bin/dolphin");
+            if (fileDolphin.exists()) { return fileDolphin.filePath(); }
+            QFileInfo fileNautilus("/usr/bin/nautilus");
+            if (fileNautilus.exists()) { return fileNautilus.filePath(); }
+            QFileInfo fileThunar("/usr/bin/thunar");
+            if (fileThunar.exists()) { return fileThunar.filePath(); }
+            return QString();  // give up
+        }
 
 };
