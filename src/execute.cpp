@@ -114,12 +114,6 @@ bool tryExecuteSmb(QString host, QString user, QString password, QString path) {
     return QProcess::startDetached(Settings::fileManager(), QStringList { arg1 });  // TODO: support other file managers
 }
 
-bool tryExecuteSsh(QString host, QString user, QString password, QString path) {
-    qDebug().noquote() << "Execute [Protocol Ssh]:" << host << path;
-    QString arg1 = combineIntoNautilusArg("ssh", host, user, password, path);
-    return QProcess::startDetached(Settings::fileManager(), QStringList { arg1 });  // TODO: support other file managers
-}
-
 QStringList splitIntoTwo(QString text, QString separator) {
     QStringList parts = text.split(separator, Qt::KeepEmptyParts);
     if (parts.length() < 2) { return parts; }
@@ -165,7 +159,7 @@ bool Execute::tryExecuteProtocol(QString text) {
     } else if (protocol == "smb") {
         return tryExecuteSmb(host, user, pass, path);
     } else if (protocol == "ssh") {
-        return tryExecuteSsh(host, user, pass, path);
+        return tryExecuteSftp(host, user, pass, path);
     }
     return false;
 }
