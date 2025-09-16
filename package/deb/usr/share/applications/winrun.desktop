@@ -7,3 +7,4 @@ Exec=env QT_QPA_PLATFORM=xcb /opt/winrun/winrun
 Icon=winrun
 Type=Application
 Categories=GTK;GNOME;Utility;
+X-KDE-Shortcuts=Meta+R
