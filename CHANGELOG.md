@@ -1,5 +1,10 @@
 ## Release Notes ##
 
+### 1.0.3 [2025-09-15]
+
+* Converting ssh:// prefix to sftp:// for better compatibility with KDE
+
+
 ### 1.0.2 [2024-03-05]
 
 * Workaround for crash on Wayland
